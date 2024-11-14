@@ -4,7 +4,7 @@ variable "pub_subnets_cidr" {
   default = [ "10.20.1.0/24", "10.20.2.0/24", "10.20.3.0/24" ]
 }
 variable "pri_subnets_cidr" {
-  description = "public subnet cidr block"
+  description = "private subnet cidr block"
   type = list(string)
   default = [ "10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24" ]
 }
@@ -40,4 +40,15 @@ variable "ami" {
   condition     = length(var.ami) > 4 && substr(var.ami, 0, 4) == "ami-"
   error_message = "Please provide a valid value for variable AMI."
  }
+}
+variable "db_username" {
+  description = "RDS root username"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_password" {
+  description = "RDS root user password"
+  type        = string
+  sensitive   = true
 }

@@ -102,6 +102,7 @@ resource "aws_nat_gateway" "nat_gw" {
   subnet_id = aws_subnet.public_subnet.id
   depends_on = [aws_internet_gateway.vpc_igw]
 }
+#private route table
 resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.main.id
   route {
@@ -112,7 +113,7 @@ resource "aws_route_table" "private_route_table" {
     Name = "private subnet route table"
   }
 }
-resource "aws_route_table_association" "m" {
+resource "aws_route_table_association" "private_route_table_association" {
   count = length(var.pri_subnets_cidr)
   subnet_id = element(aws_subnet.private_subnet.*.id,count.index)
   route_table_id = aws_route_table.private_route_table.id
