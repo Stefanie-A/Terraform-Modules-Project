@@ -8,7 +8,7 @@ resource "aws_db_subnet_group" "db_subnet" {
 }
 
 resource "aws_db_instance" "app_db" {
-  identifier                = "3tier-database"
+  identifier                = "tier-database"
   instance_class            = "db.t3.micro"
   allocated_storage         = 5
   engine                    = "postgres"

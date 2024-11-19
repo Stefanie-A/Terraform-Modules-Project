@@ -22,7 +22,7 @@ resource "aws_subnet" "public_subnet" {
   availability_zone       = element(var.azs, count.index)
   map_public_ip_on_launch = true
   tags = {
-    Name = "Subnet-${count.index + 1}"
+    Name = "public-subnet-${count.index + 1}"
   }
 }
 
@@ -82,7 +82,7 @@ resource "aws_key_pair" "ssh-key" {
 }
 #Elastic ip for NAT
 resource "aws_eip" "nat_eip" {
-  depends_on = [aws_internet_gateway.vpc_igw.id]
+  depends_on = [aws_internet_gateway.vpc_igw]
 }
 
 #private subnet
@@ -91,6 +91,7 @@ resource "aws_subnet" "private_subnet" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = element(var.pri_subnets_cidr, count.index)
   availability_zone = element(var.azs, count.index)
+  map_public_ip_on_launch = false
   tags = {
     Name = "Subnet-${count.index + 1}"
   }
@@ -99,7 +100,7 @@ resource "aws_subnet" "private_subnet" {
 #nat gateway
 resource "aws_nat_gateway" "nat_gw" {
   allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public_subnet.id
+  subnet_id     = aws_subnet.public_subnet[0].id
   depends_on    = [aws_internet_gateway.vpc_igw]
 }
 #private route table

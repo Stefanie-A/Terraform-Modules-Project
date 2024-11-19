@@ -15,3 +15,7 @@ output "rds_username" {
   value       = aws_db_instance.app_db.username
   sensitive   = true
 }
+output "private_key" {
+  value       = tls_private_key.key-pair.private_key_pem
+  sensitive   = true
+}

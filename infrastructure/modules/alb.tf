@@ -1,7 +1,7 @@
 resource "aws_launch_configuration" "servers" {
   image_id        = var.ami
   instance_type   = var.instance_type
-  security_groups = [aws_security_group.main_sg.id]
+  security_groups = [aws_security_group.sg.id]
 
   lifecycle {
     create_before_destroy = true
@@ -9,8 +9,8 @@ resource "aws_launch_configuration" "servers" {
 }
 
 resource "aws_autoscaling_group" "aws-3tier" {
-  launch_configuration = aws_launch_configuration.server.name
-  vpc_zone_identifier  = aws_subnets.private_subnet.ids
+  launch_configuration = aws_launch_configuration.servers.name
+  vpc_zone_identifier  = [for subnet in aws_subnet.private_subnet : subnet.id]
   target_group_arns    = [aws_lb_target_group.t-group.arn]
   health_check_type    = "ELB"
   min_size             = 1
@@ -25,7 +25,7 @@ resource "aws_autoscaling_group" "aws-3tier" {
 resource "aws_lb" "myloadbal" {
   name               = "hox"
   load_balancer_type = "application"
-  subnets            = aws_subnets.public_subnet.ids
+  subnets            = [for subnet in aws_subnet.public_subnet : subnet.id]
   security_groups    = [aws_security_group.sg.id]
 }
 
@@ -50,7 +50,7 @@ resource "aws_lb_target_group" "t-group" {
   name     = "target-group"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = data.aws_vpc.main.id
+  vpc_id   = aws_vpc.main.id
 
   health_check {
     path                = "/"
