@@ -16,13 +16,13 @@ resource "aws_internet_gateway" "vpc_igw" {
 
 #public subnet
 resource "aws_subnet" "public_subnet" {
-  count = length(var.pub_subnets_cidr)
-  vpc_id = aws_vpc.main.id
-  cidr_block = element(var.pub_subnets_cidr,count.index)
-  availability_zone = element(var.azs,count.index)
+  count                   = length(var.pub_subnets_cidr)
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = element(var.pub_subnets_cidr, count.index)
+  availability_zone       = element(var.azs, count.index)
   map_public_ip_on_launch = true
-  tags = { 
-    Name = "Subnet-${count.index+1}"
+  tags = {
+    Name = "Subnet-${count.index + 1}"
   }
 }
 
@@ -40,8 +40,8 @@ resource "aws_route_table" "public_rt" {
 
 #route table association with public subnet
 resource "aws_route_table_association" "name" {
-  count = length(var.pub_subnets_cidr)
-  subnet_id = element(aws_subnet.public_subnet.*.id,count.index)
+  count          = length(var.pub_subnets_cidr)
+  subnet_id      = element(aws_subnet.public_subnet.*.id, count.index)
   route_table_id = aws_route_table.public_rt.id
 }
 
@@ -50,21 +50,21 @@ resource "aws_security_group" "sg" {
   vpc_id = aws_vpc.main.id
 
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = -1
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] #don't allow all ip address to ssh in prod
-    }
+  }
   ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
@@ -74,39 +74,39 @@ resource "aws_security_group" "sg" {
 #ssh key pair
 resource "tls_private_key" "key-pair" {
   algorithm = "RSA"
-  rsa_bits = 4096
+  rsa_bits  = 4096
 }
 resource "aws_key_pair" "ssh-key" {
-  key_name = var.key_name
+  key_name   = var.key_name
   public_key = tls_private_key.key-pair.public_key_openssh
 }
 #Elastic ip for NAT
 resource "aws_eip" "nat_eip" {
-  depends_on = [ aws_internet_gateway.vpc_igw.id ]
+  depends_on = [aws_internet_gateway.vpc_igw.id]
 }
 
 #private subnet
 resource "aws_subnet" "private_subnet" {
-  count = length(var.pri_subnets_cidr)
-  vpc_id = aws_vpc.main.id
-  cidr_block = element(var.pri_subnets_cidr,count.index)
-  availability_zone = element(var.azs,count.index)
-  tags = { 
-    Name = "Subnet-${count.index+1}"
+  count             = length(var.pri_subnets_cidr)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = element(var.pri_subnets_cidr, count.index)
+  availability_zone = element(var.azs, count.index)
+  tags = {
+    Name = "Subnet-${count.index + 1}"
   }
 }
 
 #nat gateway
 resource "aws_nat_gateway" "nat_gw" {
   allocation_id = aws_eip.nat_eip.id
-  subnet_id = aws_subnet.public_subnet.id
-  depends_on = [aws_internet_gateway.vpc_igw]
+  subnet_id     = aws_subnet.public_subnet.id
+  depends_on    = [aws_internet_gateway.vpc_igw]
 }
 #private route table
 resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.main.id
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat_gw.id
   }
   tags = {
@@ -114,7 +114,7 @@ resource "aws_route_table" "private_route_table" {
   }
 }
 resource "aws_route_table_association" "private_route_table_association" {
-  count = length(var.pri_subnets_cidr)
-  subnet_id = element(aws_subnet.private_subnet.*.id,count.index)
+  count          = length(var.pri_subnets_cidr)
+  subnet_id      = element(aws_subnet.private_subnet.*.id, count.index)
   route_table_id = aws_route_table.private_route_table.id
 }
