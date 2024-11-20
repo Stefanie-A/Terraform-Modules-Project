@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "db_subnet" {
-  name       = "3tier-database"
-  subnet_ids = var.pub_subnets_cidr
+  name       = "app-database"
+  subnet_ids = [aws_subnet.private_subnet[0].id, aws_subnet.private_subnet[1].id]
 
   tags = {
     Name = "My DB subnet group"

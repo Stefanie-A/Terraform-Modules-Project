@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "terraformstate-file"
+  bucket = "terraformstate-files"
 
   lifecycle {
     prevent_destroy = false
@@ -47,7 +47,7 @@ resource "aws_s3_bucket" "bucket" {
 
 resource "aws_s3_bucket_acl" "bucket-acl" {
   bucket = aws_s3_bucket.bucket.bucket
-  acl    = "public-read"
+  acl    = "private"
 }
 
 resource "aws_s3_bucket_versioning" "versioning_example" {

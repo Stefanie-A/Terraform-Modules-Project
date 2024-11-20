@@ -1,7 +1,7 @@
 variable "pub_subnets_cidr" {
   description = "public subnet cidr block"
   type        = list(string)
-  default     = ["10.20.1.0/24", "10.20.2.0/24", "10.20.3.0/24"]
+  default     = ["10.0.5.0/24", "10.0.4.0/24", "10.0.6.0/24"]
 }
 variable "pri_subnets_cidr" {
   description = "private subnet cidr block"
