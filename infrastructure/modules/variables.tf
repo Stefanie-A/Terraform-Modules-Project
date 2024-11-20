@@ -68,3 +68,12 @@ variable "allowed_repos_branches" {
     }
   ]
 }
+
+variable "bucket_name" {
+  type        = string
+  description = "S3 bucket for frontend"
+}
+variable "domain_name" {
+  type        = string
+  description = "The domain name for the website."
+}

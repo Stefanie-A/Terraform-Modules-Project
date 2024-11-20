@@ -87,10 +87,10 @@ resource "aws_eip" "nat_eip" {
 
 #private subnet
 resource "aws_subnet" "private_subnet" {
-  count             = length(var.pri_subnets_cidr)
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = element(var.pri_subnets_cidr, count.index)
-  availability_zone = element(var.azs, count.index)
+  count                   = length(var.pri_subnets_cidr)
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = element(var.pri_subnets_cidr, count.index)
+  availability_zone       = element(var.azs, count.index)
   map_public_ip_on_launch = false
   tags = {
     Name = "Subnet-${count.index + 1}"
