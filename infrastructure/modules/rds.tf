@@ -11,8 +11,8 @@ resource "aws_db_instance" "app_db" {
   identifier                = "tier-database"
   instance_class            = "db.t3.micro"
   allocated_storage         = 5
-  engine                    = "postgres"
-  engine_version            = "14.1"
+  engine                    = "mysql"
+  engine_version            = "8.0.40"
   username                  = var.db_username
   password                  = var.db_password
   db_subnet_group_name      = aws_db_subnet_group.db_subnet.name
