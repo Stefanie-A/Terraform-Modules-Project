@@ -30,11 +30,11 @@ variable "security_group" {
 }
 variable "instance_type" {
   type        = string
-  description = "Instance type for load balancer"
+  description = "Instance type"
 }
 variable "ami" {
   type        = string
-  description = "Instance type for load balancer"
+  description = "AMI for instance"
   default     = "ami-0866a3c8686eaeeba"
   validation {
     condition     = length(var.ami) > 4 && substr(var.ami, 0, 4) == "ami-"
@@ -76,4 +76,9 @@ variable "bucket_name" {
 variable "domain_name" {
   type        = string
   description = "The domain name for the website."
+}
+
+variable "state_bucket" {
+  type = string
+  description = "S3 bucket name for state file"
 }

@@ -1,7 +1,8 @@
+#s3 bucket for remote backend
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "terraformstate-files"
+  bucket = var.state_bucket
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
@@ -42,11 +43,12 @@ resource "aws_dynamodb_table" "terraform_locks" {
 #S3 bucket to host frontend
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
+  
 }
 
 resource "aws_s3_bucket_acl" "bucket-acl" {
-  bucket = aws_s3_bucket.bucket.bucket
-  acl    = "private"
+   bucket = aws_s3_bucket.bucket.id
+   acl    = "private"
 }
 
 resource "aws_s3_bucket_versioning" "versioning_example" {
@@ -67,7 +69,7 @@ resource "aws_s3_bucket_cors_configuration" "example" {
 }
 
 resource "aws_s3_bucket_policy" "bucket-policy" {
-  bucket = aws_s3_bucket.bucket.bucket
+  bucket = aws_s3_bucket.bucket.id
   policy = data.aws_iam_policy_document.iam-policy-1.json
 }
 
