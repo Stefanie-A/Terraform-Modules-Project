@@ -64,6 +64,13 @@ resource "aws_security_group" "sg" {
     cidr_blocks = ["0.0.0.0/0"] #don't allow all ip address to ssh in prod
   }
   ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"] # Adjust as necessary
+  }
+  
+  ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
