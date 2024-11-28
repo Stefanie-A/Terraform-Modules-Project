@@ -41,25 +41,24 @@ resource "aws_dynamodb_table" "terraform_locks" {
 }
 
 #S3 bucket to host frontend
-resource "aws_s3_bucket" "bucket" {
+resource "aws_s3_bucket" "fr-bucket" {
   bucket = var.bucket_name
-  
 }
 
-resource "aws_s3_bucket_acl" "bucket-acl" {
-   bucket = aws_s3_bucket.bucket.id
-   acl    = "private"
-}
+# resource "aws_s3_bucket_acl" "bucket-acl" {
+#    bucket = aws_s3_bucket.bucket.id
+#    acl    = "private"
+# }
 
 resource "aws_s3_bucket_versioning" "versioning_example" {
-  bucket = aws_s3_bucket.bucket.bucket
+  bucket = aws_s3_bucket.fr-bucket.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
 resource "aws_s3_bucket_cors_configuration" "example" {
-  bucket = aws_s3_bucket.bucket.bucket
+  bucket = aws_s3_bucket.fr-bucket.id
   cors_rule {
     allowed_headers = ["Authorization", "Content-Length"]
     allowed_methods = ["GET", "POST"]
@@ -69,7 +68,7 @@ resource "aws_s3_bucket_cors_configuration" "example" {
 }
 
 resource "aws_s3_bucket_policy" "bucket-policy" {
-  bucket = aws_s3_bucket.bucket.id
+  bucket = aws_s3_bucket.fr-bucket.id
   policy = data.aws_iam_policy_document.iam-policy-1.json
 }
 
@@ -78,19 +77,19 @@ data "aws_iam_policy_document" "iam-policy-1" {
     sid    = "AllowPublicRead"
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::${var.domain_name}",
-      "arn:aws:s3:::${var.domain_name}/*",
+      "arn:aws:s3:::${aws_s3_bucket.fr-bucket.id}",
+      "arn:aws:s3:::${aws_s3_bucket.fr-bucket.id}/*",
     ]
     actions = ["S3:GetObject"]
     principals {
-      type        = "*"
-      identifiers = ["*"]
+      type        = "CanonicalUser"
+      identifiers = [aws_cloudfront_origin_access_identity.my_oai.s3_canonical_user_id]
     }
   }
 }
 
 resource "aws_s3_bucket_website_configuration" "bucket" {
-  bucket = aws_s3_bucket.bucket.bucket
+  bucket = aws_s3_bucket.fr-bucket.id
 
   index_document {
     suffix = "index.html"

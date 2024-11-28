@@ -79,6 +79,6 @@ variable "domain_name" {
 }
 
 variable "state_bucket" {
-  type = string
+  type        = string
   description = "S3 bucket name for state file"
 }

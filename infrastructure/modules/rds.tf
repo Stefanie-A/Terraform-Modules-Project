@@ -28,7 +28,7 @@ resource "aws_db_instance" "app_db" {
 
 resource "aws_db_parameter_group" "db_para" {
   name   = "data-para"
-  family = "postgres14"
+  family = "mysql5.7"
 
   parameter {
     name  = "log_connections"
