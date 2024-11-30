@@ -19,8 +19,8 @@ resource "aws_db_instance" "app_db" {
   vpc_security_group_ids    = [aws_security_group.sg.id]
   parameter_group_name      = aws_db_parameter_group.db_para.name
   publicly_accessible       = false
-  skip_final_snapshot       = false
-  final_snapshot_identifier = "db-snap-${timestamp()}"
+  skip_final_snapshot       = true
+  # final_snapshot_identifier = "db-snap-${t}"
   backup_retention_period   = 7
   backup_window             = "03:00-04:00"
   maintenance_window        = "mon:04:00-mon:04:30"

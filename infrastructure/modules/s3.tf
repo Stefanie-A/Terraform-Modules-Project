@@ -68,17 +68,17 @@ resource "aws_s3_bucket_cors_configuration" "example" {
 }
 
 resource "aws_s3_bucket_policy" "bucket-policy" {
-  bucket = aws_s3_bucket.fr-bucket.id
+  bucket = aws_s3_bucket.fr-bucket.bucket
   policy = data.aws_iam_policy_document.iam-policy-1.json
 }
 
 data "aws_iam_policy_document" "iam-policy-1" {
   statement {
-    sid    = "AllowPublicRead"
+    sid    = "AllowOAIRead"
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.fr-bucket.id}",
-      "arn:aws:s3:::${aws_s3_bucket.fr-bucket.id}/*",
+      "arn:aws:s3:::${aws_s3_bucket.fr-bucket.arn}",
+      "arn:aws:s3:::${aws_s3_bucket.fr-bucket.arn}/*",
     ]
     actions = ["S3:GetObject"]
     principals {
