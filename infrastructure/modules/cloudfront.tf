@@ -1,13 +1,13 @@
 resource "aws_cloudfront_distribution" "my_distribution" {
   origin {
     domain_name = aws_s3_bucket.fr-bucket.bucket_regional_domain_name
-    origin_id   = "S3-${aws_s3_bucket.fr-bucket.id}"
+    origin_id   = "S3-Origin"
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.my_oai.cloudfront_access_identity_path
     }
   }
   default_cache_behavior {
-    target_origin_id       = var.bucket_name
+    target_origin_id       = "S3-Origin"
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
     cached_methods         = ["GET", "HEAD"]
@@ -34,7 +34,6 @@ resource "aws_cloudfront_distribution" "my_distribution" {
   is_ipv6_enabled     = true
   default_root_object = "index.html"
 }
-
 resource "aws_cloudfront_origin_access_identity" "my_oai" {
   comment = "CloudFront OAI for S3 bucket"
 }

@@ -68,7 +68,7 @@ resource "aws_s3_bucket_cors_configuration" "example" {
 }
 
 resource "aws_s3_bucket_policy" "bucket-policy" {
-  bucket = aws_s3_bucket.fr-bucket.bucket
+  bucket = aws_s3_bucket.fr-bucket.id
   policy = data.aws_iam_policy_document.iam-policy-1.json
 }
 
@@ -76,11 +76,11 @@ data "aws_iam_policy_document" "iam-policy-1" {
   statement {
     sid    = "AllowOAIRead"
     effect = "Allow"
-    resources = [
-      "arn:aws:s3:::${aws_s3_bucket.fr-bucket.arn}",
-      "arn:aws:s3:::${aws_s3_bucket.fr-bucket.arn}/*",
-    ]
     actions = ["S3:GetObject"]
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.fr-bucket.bucket}",
+      "arn:aws:s3:::${aws_s3_bucket.fr-bucket.bucket}/*",
+    ]
     principals {
       type        = "CanonicalUser"
       identifiers = [aws_cloudfront_origin_access_identity.my_oai.s3_canonical_user_id]
