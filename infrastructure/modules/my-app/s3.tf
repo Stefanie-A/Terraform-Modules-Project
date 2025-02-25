@@ -32,7 +32,7 @@ resource "aws_s3_bucket_public_access_block" "public_access" {
 
 #S3 bucket to host frontend
 resource "aws_s3_bucket" "fr-bucket" {
-  bucket = var.bucket_name
+  bucket = local.bucket_name
 }
 
 resource "aws_s3_bucket_acl" "bucket-acl" {

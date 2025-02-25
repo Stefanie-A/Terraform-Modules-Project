@@ -60,9 +60,11 @@ variable "bucket_name" {
 variable "domain_name" {
   type        = string
   description = "The domain name for the website."
+  default = "www.steph.com"
 }
 
 variable "state_bucket" {
   type        = string
   description = "S3 bucket name for state file"
+  default = "tf-state21123"
 }
