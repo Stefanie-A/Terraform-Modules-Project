@@ -53,22 +53,6 @@ variable "db_password" {
   sensitive   = true
 }
 
-variable "allowed_repos_branches" {
-  description = "GitHub repos/branches allowed to assume the IAM role."
-  type = list(object({
-    org    = string
-    repo   = string
-    branch = string
-  }))
-  default = [
-    {
-      org    = "Stefanie-A"
-      repo   = "aws-3tier"
-      branch = "main"
-    }
-  ]
-}
-
 variable "bucket_name" {
   type        = string
   description = "S3 bucket for frontend"

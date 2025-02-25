@@ -16,7 +16,7 @@ resource "aws_cloudfront_distribution" "my_distribution" {
     max_ttl                = 86400
     forwarded_values {
       query_string = false
-      headers      = ["*"]
+      headers      = ["CloudFront-Viewer-Country", "CloudFront-Is-Desktop-Viewer"]
       cookies {
         forward = "none"
       }
@@ -37,3 +37,4 @@ resource "aws_cloudfront_distribution" "my_distribution" {
 resource "aws_cloudfront_origin_access_identity" "my_oai" {
   comment = "CloudFront OAI for S3 bucket"
 }
+
