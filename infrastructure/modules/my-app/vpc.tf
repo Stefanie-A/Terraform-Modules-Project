@@ -1,8 +1,6 @@
 #vpc
 resource "aws_vpc" "main" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
+  cidr_block = "10.0.0.0/16"
   tags = {
     Name = "vpc"
   }
@@ -28,7 +26,7 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
-#route table attach to igw
+#public subnet route table
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.main.id
   route {
@@ -47,48 +45,6 @@ resource "aws_route_table_association" "name" {
   route_table_id = aws_route_table.public_rt.id
 }
 
-#security group
-resource "aws_security_group" "sg" {
-  vpc_id = aws_vpc.main.id
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = -1
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] #don't allow all ip address to ssh in prod
-  }
-  ingress {
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"] # Adjust as necessary
-  }
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags = {
-    Name = "var.security_group"
-  }
-}
-#ssh key pair
-resource "tls_private_key" "key-pair" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-resource "aws_key_pair" "ssh-key" {
-  key_name   = var.key_name
-  public_key = tls_private_key.key-pair.public_key_openssh
-}
 #Elastic ip for NAT
 resource "aws_eip" "nat_eip" {
   depends_on = [aws_internet_gateway.vpc_igw]

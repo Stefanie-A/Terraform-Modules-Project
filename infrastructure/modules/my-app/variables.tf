@@ -1,12 +1,12 @@
 variable "pub_subnets_cidr" {
   description = "public subnet cidr block"
   type        = list(string)
-  default     = ["10.0.5.0/24", "10.0.4.0/24", "10.0.6.0/24"]
+  default     = ["10.0.0.0/24", "10.0.2.0/24", "10.0.3.0/24"]
 }
 variable "pri_subnets_cidr" {
   description = "private subnet cidr block"
   type        = list(string)
-  default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  default     = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
 }
 variable "azs" {
   type        = list(string)
@@ -31,16 +31,9 @@ variable "security_group" {
 variable "instance_type" {
   type        = string
   description = "Instance type"
+  default     = "t2.micro"
 }
-variable "ami" {
-  type        = string
-  description = "AMI for instance"
-  default     = "ami-0866a3c8686eaeeba"
-  validation {
-    condition     = length(var.ami) > 4 && substr(var.ami, 0, 4) == "ami-"
-    error_message = "Please provide a valid value for variable AMI."
-  }
-}
+
 variable "db_username" {
   description = "RDS root username"
   type        = string
@@ -53,18 +46,14 @@ variable "db_password" {
   sensitive   = true
 }
 
-variable "bucket_name" {
-  type        = string
-  description = "S3 bucket for frontend"
-}
 variable "domain_name" {
   type        = string
   description = "The domain name for the website."
-  default = "www.steph.com"
+  default     = "www.steph.com"
 }
 
 variable "state_bucket" {
   type        = string
   description = "S3 bucket name for state file"
-  default = "tf-state21123"
+  default     = "tf-state21123"
 }

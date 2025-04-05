@@ -5,14 +5,14 @@ terraform {
       version = "~> 5.0.0"
     }
   }
-  # backend "s3" {
-  #   key            = "state/terraform.tfstate"
-  #   bucket         = "terraformstate-file"
-  #   region         = "us-east-1"
-  #   dynamodb_table = "terraform-state-locks"
-  #   encrypt        = true
-  # }
-  required_version = ">=1.2.0"
+  backend "s3" {
+    key            = "state/terraform.tfstate"
+    bucket         = "tf-state12345"
+    region         = "us-east-1"
+    dynamodb_table = "tf-state-lock"
+    encrypt        = true
+  }
+  required_version = ">=1.8.0"
 }
 
 provider "aws" {
