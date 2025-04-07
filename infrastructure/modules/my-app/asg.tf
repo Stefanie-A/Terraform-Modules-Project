@@ -45,7 +45,7 @@ resource "aws_launch_template" "launch_template" {
   }
 }
 resource "aws_autoscaling_group" "autoscaling_group" {
-  min_size                  = 2
+  min_size                  = 1
   max_size                  = 3
   health_check_grace_period = 300
   health_check_type         = "ELB"

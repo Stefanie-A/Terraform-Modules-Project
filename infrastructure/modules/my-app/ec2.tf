@@ -1,9 +1,20 @@
+#ssh key pair
+resource "tls_private_key" "key-pair" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+resource "aws_key_pair" "ssh-key" {
+  key_name   = var.key_name
+  public_key = tls_private_key.key-pair.public_key_openssh
+}
+
 resource "aws_instance" "ec2_instance" {
   ami             = data.aws_ami.ubuntu.id
   instance_type   = var.instance_type
   key_name        = var.key_name
   security_groups = [aws_security_group.sg.id]
-  subnet_id       = aws_subnet.public_subnet[0].id
+  subnet_id       = aws_subnet.private_subnet[0].id
+  user_data       = file("${path.module}/user_data.sh")
   tags = {
     Name = "fox"
   }
@@ -42,12 +53,4 @@ resource "aws_security_group" "sg" {
     Name = "var.security_group"
   }
 }
-#ssh key pair
-resource "tls_private_key" "key-pair" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-resource "aws_key_pair" "ssh-key" {
-  key_name   = var.key_name
-  public_key = tls_private_key.key-pair.public_key_openssh
-}
+

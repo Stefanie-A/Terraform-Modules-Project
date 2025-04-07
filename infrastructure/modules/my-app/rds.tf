@@ -38,3 +38,21 @@ resource "aws_db_parameter_group" "db_para" {
     value = "2"
   }
 }
+
+resource "aws_secretsmanager_secret" "rds_secret" {
+  description = "RDS credentials for MySQL database"
+  tags = {
+    Name = "My RDS Secret"
+  }
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "rds_secret_version" {
+  secret_id = aws_secretsmanager_secret.rds_secret.id
+  secret_string = jsonencode({
+    username = var.db_username
+    password = var.db_password
+  })
+}
