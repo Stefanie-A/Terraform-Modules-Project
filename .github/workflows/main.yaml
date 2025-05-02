@@ -1,0 +1,36 @@
+name: deploy to ec2
+on:
+    workflow_dispatch:
+
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ secrets.AWS_REGION }}
+    
+        - name: Terraform setup
+          uses: hashicorp/setup-terraform@v3
+          with:
+            terraform_version: 1.10.4
+    
+        - name: Set up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: '3.x'
+    
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install ansible boto3
+    
+        - name: Run Ansible playbook
+          run: ansible-playbook infrastructure/modules/my-app/configure.yaml -i infrastructure/modules/my-app/aws_ec2.yaml --private-key ${{ secrets.EC2_SSH_KEY }} --user ec2-user --extra-vars "ansible_python_interpreter=/usr/bin/python3" --limit tag_Name_my-app-instance
