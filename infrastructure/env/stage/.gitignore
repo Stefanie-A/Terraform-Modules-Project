@@ -1,3 +1,7 @@
 .terraform
+<<<<<<< HEAD
 modules.json
 .terraform.lock.hcl
+=======
+modules.json
+>>>>>>> b1b4f410bf2dfd9afe2f3c757fb09bf178e89bce
